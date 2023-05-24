@@ -16,37 +16,18 @@ let punkteAnzeige = document.getElementById("punkteAnzeige");
 let ausgewaehlterKnopf;
 let timer;
 
+let kategorie = "teil-allgemein";
+
 let punkte = 0;
 
-let aktuelleFrageIndex = 0;
+let zufaelligeFrageIndex = 0;
 let ausgewaehlteAntwort;
+let zufaelligeFrage;
+let fragenListeKategorie;
 
-let fragenListe = [
-    {
-        frage: "Was macht man mit einem Hund ohne Beine",
-        auswahl1: "Gassi gehen",
-        auswahl2: "Um die Häuser ziehen",
-        auswahl3: "Nichts, der kommt eh nicht",
-        auswahl4: "Ihn streicheln",
-        antwort: 2
-    },
-    {
-        frage: "Was ist der Unterschied zwischen einem Keks und einem Elefanten",
-        auswahl1: "Der Keks ist kleiner",
-        auswahl2: "Der Elefant ist größer",
-        auswahl3: "Der Keks ist zum Essen da",
-        auswahl4: "Der Elefant ist ein Tier",
-        antwort: 3
-    },
-    {
-        frage: "Wer ist ein ET?",
-        auswahl1: "Ein Außerirdischer",
-        auswahl2: "Ein Mensch",
-        auswahl3: "Ein Tier",
-        auswahl4: "Ein Roboter",
-        antwort: 1
-    }
-];
+let fragenListe = [];
+
+
 
 // Eventlistener
 
@@ -93,17 +74,64 @@ beendenKnopf.addEventListener("click", function () {
 
 });
 
+//Fetch API
 
+// Offline
+fetch('fragen.json')
+    .then((res) => {
+        return res.json();
+    })
+    .then((geladeneFragen) => {
+        fragenListe = geladeneFragen;
+        zufaelligeFrageAnzeigen(kategorie);
+    })
+    .catch((err) => {
+        console.error(err);
+    });
+
+// Online
+
+/* fetch('https://example.com/api/tasks', {
+  method: 'GET', 
+  headers: {
+    'Content-Type': 'application/json',
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Success:', data);
+})
+.catch((error) => {
+  console.error('Error:', error);
+});*/
 
 // Funktionen
 
-function frageAnzeigen() {
-    let aktuelleFrage = fragenListe[aktuelleFrageIndex];
-    frage.innerText = aktuelleFrage.frage;
-    knopf1.innerText = aktuelleFrage.auswahl1;
-    knopf2.innerText = aktuelleFrage.auswahl2;
-    knopf3.innerText = aktuelleFrage.auswahl3;
-    knopf4.innerText = aktuelleFrage.auswahl4;
+function frageAnzeigen(zufaelligeFrage) {
+    frage.innerText = zufaelligeFrage.f;
+    knopf1.innerText = zufaelligeFrage.l[0];
+    knopf2.innerText = zufaelligeFrage.l[1];
+    knopf3.innerText = zufaelligeFrage.l[2];
+    knopf4.innerText = zufaelligeFrage.l[3];
+}
+
+function zufaelligeFrageAnzeigen(kategorie) {
+    fragenListeKategorie = fragenListe[kategorie];
+    if (fragenListeKategorie.length > 0) {
+        // Wählen Sie eine zufällige Indexnummer
+        let zufaelligerIndex = Math.floor(Math.random() * fragenListeKategorie.length);
+        // Wählen Sie die Frage an diesem Index
+        zufaelligeFrage = fragenListeKategorie[zufaelligerIndex];
+
+        // Entfernen Sie die Frage aus dem Array, damit sie nicht wiederholt wird
+        fragenListeKategorie.splice(zufaelligerIndex, 1);
+
+        // Zeigen Sie die Frage an (Sie müssen diese Funktion entsprechend Ihrer Anwendung anpassen)
+        frageAnzeigen(zufaelligeFrage);
+    } else {
+        console.log("Keine Fragen mehr übrig!");
+    }
+}
 
  /*   clearInterval(timer);
     let sekunden = 10;
@@ -115,15 +143,14 @@ function frageAnzeigen() {
         document.getElementById("sekunden").innerText = sekunden;
         if (sekunden == 0) {
             clearInterval(timer);
-            aktuelleFrageIndex++;
+            zufaelligeFrageIndex++;
             naechsteFrage();
         }
     },1000); */
-}
+
 
 function farbeAendern() // Funktion um die Farbe der Knöpfe zu ändern
 {
-    let aktuelleFrage = fragenListe[aktuelleFrageIndex];
     let knopf = null;
 
     switch (ausgewaehlterKnopf) { // Switch-Case um den ausgewählten Knopf zu ermitteln
@@ -143,7 +170,7 @@ function farbeAendern() // Funktion um die Farbe der Knöpfe zu ändern
             console.log("Fehler");
             return;  // Verlässt die Funktion oder den CodeblocK
     }
-    if (ausgewaehlteAntwort == aktuelleFrage.antwort) {
+    if (ausgewaehlteAntwort == zufaelligeFrage.a) {
         knopf.style.backgroundColor = "green";
     } else {
         knopf.style.backgroundColor = "red";
@@ -154,9 +181,8 @@ function farbeAendern() // Funktion um die Farbe der Knöpfe zu ändern
     }, 2000);
 }
 function ueberpruefen() {
-    let aktuelleFrage = fragenListe[aktuelleFrageIndex];
-
-    if (ausgewaehlteAntwort == aktuelleFrage.antwort) {
+    console.log(zufaelligeFrage.a);
+    if (ausgewaehlteAntwort == zufaelligeFrage.a) {
         farbeAendern()
         punkte++;
         punkteAnzeige.innerText = "Punkte: " + punkte;
@@ -168,17 +194,17 @@ function ueberpruefen() {
 
 
     setTimeout(function() { // Timeout um die Farbe wieder zu ändern
-        aktuelleFrageIndex++;
+        zufaelligeFrageIndex++;
         naechsteFrage();
     }, 2000);
 
 }
 
 function naechsteFrage() {
-    if (aktuelleFrageIndex < fragenListe.length) {
-        frageAnzeigen();
+    if (zufaelligeFrageIndex < fragenListeKategorie.length) {
+        zufaelligeFrageAnzeigen(kategorie);
         let fortschritt = document.getElementById("fortschritt");
-        let fortschrittProzent = (aktuelleFrageIndex / fragenListe.length) * 100;
+        let fortschrittProzent = (zufaelligeFrageIndex / fragenListeKategorie.length) * 100;
         fortschritt.style.width = fortschrittProzent + "%";
         fortschritt.innerText = parseInt(fortschrittProzent) + "%";
         antwortAusgewaehlt = false;
@@ -190,15 +216,9 @@ function naechsteFrage() {
 }
 
 
-
-
-
-
-
 function weiterleiten() {
     setTimeout(function () {
         window.location.href = "Ende.html";
     }, 1000);
 }
 
-frageAnzeigen();
