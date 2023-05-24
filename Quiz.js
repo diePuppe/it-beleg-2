@@ -1,10 +1,25 @@
-let frage = document.getElementById("frage");	
-let antwort1 = document.getElementById("antwort1");
-let antwort2 = document.getElementById("antwort2");
-let antwort3 = document.getElementById("antwort3");
-let antwort4 = document.getElementById("antwort4");
+
+let frage = document.getElementById("frage");
+
+
+let knopf1 = document.getElementById("knopf1");
+let knopf2 = document.getElementById("knopf2");
+let knopf3 = document.getElementById("knopf3");
+let knopf4 = document.getElementById("knopf4");
+let pauseKnopf = document.getElementById("pauseKnopf");
+let beendenKnopf = document.getElementById("beendenKnopf");
+
+
+
+let antwortAusgewaehlt = false;
+let punkteAnzeige = document.getElementById("punkteAnzeige");
+let ausgewaehlterKnopf;
+let timer;
+
+let punkte = 0;
 
 let aktuelleFrageIndex = 0;
+let ausgewaehlteAntwort;
 
 let fragenListe = [
     {
@@ -33,19 +48,157 @@ let fragenListe = [
     }
 ];
 
-function weiterleiten() {
-    setTimeout(function () {
-        console.log("Weiterleitung");
-    }, 1000);
-}
+// Eventlistener
+
+knopf1.addEventListener("click", function () {
+    if(antwortAusgewaehlt == false) {
+        ausgewaehlteAntwort = 1;
+        ausgewaehlterKnopf = 1;
+        ueberpruefen();
+        antwortAusgewaehlt = true;
+    }
+});
+
+knopf2.addEventListener("click", function () {
+    if(antwortAusgewaehlt == false) {
+        ausgewaehlteAntwort = 2;
+        ausgewaehlterKnopf = 2;
+        ueberpruefen();
+        antwortAusgewaehlt = true;
+    }
+});
+
+knopf3.addEventListener("click", function () {
+    if(antwortAusgewaehlt == false) {
+        ausgewaehlteAntwort = 3;
+        ausgewaehlterKnopf = 3;
+        ueberpruefen();
+        antwortAusgewaehlt = true;
+    }
+});
+
+knopf4.addEventListener("click", function () {
+    if(antwortAusgewaehlt == false) {
+        ausgewaehlteAntwort = 4;
+        ausgewaehlterKnopf = 4;
+        ueberpruefen();
+        antwortAusgewaehlt = true;
+    }
+});
+
+
+beendenKnopf.addEventListener("click", function () {
+    window.location.href = "Startseite.html";
+    alert("Du hast " + punkte + " Punkte erreicht");
+
+});
+
+
+
+// Funktionen
 
 function frageAnzeigen() {
     let aktuelleFrage = fragenListe[aktuelleFrageIndex];
     frage.innerText = aktuelleFrage.frage;
-    antwort1.innerText = aktuelleFrage.auswahl1;
-    antwort2.innerText = aktuelleFrage.auswahl2;
-    antwort3.innerText = aktuelleFrage.auswahl3;
-    antwort4.innerText = aktuelleFrage.auswahl4;
+    knopf1.innerText = aktuelleFrage.auswahl1;
+    knopf2.innerText = aktuelleFrage.auswahl2;
+    knopf3.innerText = aktuelleFrage.auswahl3;
+    knopf4.innerText = aktuelleFrage.auswahl4;
+
+ /*   clearInterval(timer);
+    let sekunden = 10;
+    timer = setInterval(function () {
+        sekunden--;
+        if (sekunden < 10) {
+            sekunden = "0" + sekunden;
+        }
+        document.getElementById("sekunden").innerText = sekunden;
+        if (sekunden == 0) {
+            clearInterval(timer);
+            aktuelleFrageIndex++;
+            naechsteFrage();
+        }
+    },1000); */
+}
+
+function farbeAendern() // Funktion um die Farbe der Knöpfe zu ändern
+{
+    let aktuelleFrage = fragenListe[aktuelleFrageIndex];
+    let knopf = null;
+
+    switch (ausgewaehlterKnopf) { // Switch-Case um den ausgewählten Knopf zu ermitteln
+        case 1:
+            knopf = knopf1;
+            break;
+        case 2:
+            knopf = knopf2;
+            break;
+        case 3:
+            knopf = knopf3;
+            break;
+        case 4:
+            knopf = knopf4;
+            break;
+        default:
+            console.log("Fehler");
+            return;  // Verlässt die Funktion oder den CodeblocK
+    }
+    if (ausgewaehlteAntwort == aktuelleFrage.antwort) {
+        knopf.style.backgroundColor = "green";
+    } else {
+        knopf.style.backgroundColor = "red";
+    }
+
+    setTimeout(function() { // Timeout um die Farbe wieder zu ändern
+        knopf.style.backgroundColor = "#3F51B5";
+    }, 2000);
+}
+function ueberpruefen() {
+    let aktuelleFrage = fragenListe[aktuelleFrageIndex];
+
+    if (ausgewaehlteAntwort == aktuelleFrage.antwort) {
+        farbeAendern()
+        punkte++;
+        punkteAnzeige.innerText = "Punkte: " + punkte;
+    }
+    else {
+        console.log("Falsch");
+    }
+    farbeAendern()
+
+
+    setTimeout(function() { // Timeout um die Farbe wieder zu ändern
+        aktuelleFrageIndex++;
+        naechsteFrage();
+    }, 2000);
+
+}
+
+function naechsteFrage() {
+    if (aktuelleFrageIndex < fragenListe.length) {
+        frageAnzeigen();
+        let fortschritt = document.getElementById("fortschritt");
+        let fortschrittProzent = (aktuelleFrageIndex / fragenListe.length) * 100;
+        fortschritt.style.width = fortschrittProzent + "%";
+        fortschritt.innerText = parseInt(fortschrittProzent) + "%";
+        antwortAusgewaehlt = false;
+    }
+    else {
+        console.log("Ende");
+        weiterleiten();
+    }
+}
+
+
+
+
+
+
+
+function weiterleiten() {
+    setTimeout(function () {
+        window.location.href = "Ende.html";
+    }, 1000);
 }
 
 frageAnzeigen();

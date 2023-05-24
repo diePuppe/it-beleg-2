@@ -8,24 +8,32 @@
     <link rel= stylesheet href="Style.css">
 </head>
 <body>
-    <p>Test</p>
     <div class="ueberschrift">Löse die folgenden Fragen</div>
-    <div class="fortschritt"></div>
-    <div class="punktezahl"></div>
+    <div class="knopfRand">
+        <div class="fortschritt" id="fortschritt"></div>
+    </div>
+    <div id="sekunden" class="timer"></div>
+
+    <div class="punktezahl" id="punkteAnzeige">Punkte: 0</div>
     <div class="frage" id="frage"></div>
     <div class="antworten">
-        <button onclick="weiterleiten()" class="knopf-antwort">
+        <button id="knopf1" class="knopf">
             <div id="antwort1"></div>
-         </button>
-        <button onclick="weiterleiten()" class="knopf-antwort">
-        <div id="antwort2"></div>    
         </button>
-        <button onclick="weiterleiten()" class="knopf-antwort">
-        <div id="antwort3"></div>
+        <button id="knopf2" class="knopf">
+            <div id="antwort2"></div>
         </button>
-        <button onclick="weiterleiten()" class="knopf-antwort">
-        <div id="antwort4"></div>
+        <button id="knopf3" class="knopf">
+            <div id="antwort3"></div>
         </button>
+        <button id="knopf4" class="knopf">
+            <div id="antwort4"></div>
+        </button>
+    </div>
+    <div class="knopfRand">
+        <button class="knopf-bedienung" id="beendenKnopf">Stop</button>
+    </div>
+
 </body>
 <script src="Quiz.js"></script>
 </html>
