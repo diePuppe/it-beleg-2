@@ -76,7 +76,7 @@ button:hover {
     font-size: 30px;
     font-weight: 500;
     margin-bottom: 10px;
-    margin-top: 1rem;  /* 1rem = 16px */
+    margin-top: 15px;
     color: #3F51B5;
 }
 
@@ -91,7 +91,10 @@ button:hover {
 .fortschritt{
     background-color: #CDDC39; /* Die Farbe des Fortschrittsbalkens */
     height: 20px; /* Die Höhe des Fortschrittsbalkens */
-    width: 0%; /* Die anfängliche Breite des Fortschrittsbalkens */
+    width: 100%; /* Die anfängliche Breite des Fortschrittsbalkens */
+    transition: width 0.3s ease; /* Übergangseffekt */
+
+
 }
 
 .timer{

@@ -15,8 +15,9 @@ let antwortAusgewaehlt = false;
 let punkteAnzeige = document.getElementById("punkteAnzeige");
 let ausgewaehlterKnopf;
 let timer;
+let fragenListeLaenge;
 
-let kategorie = "teil-allgemein";
+let kategorie = "teil-noten";
 
 let punkte = 0;
 
@@ -83,6 +84,7 @@ fetch('fragen.json')
     })
     .then((geladeneFragen) => {
         fragenListe = geladeneFragen;
+        fragenListeLaenge = fragenListe[kategorie].length;
         zufaelligeFrageAnzeigen(kategorie);
     })
     .catch((err) => {
@@ -173,15 +175,18 @@ function farbeAendern() // Funktion um die Farbe der Knöpfe zu ändern
     if (ausgewaehlteAntwort == zufaelligeFrage.a) {
         knopf.style.backgroundColor = "green";
     } else {
+        knopfRichtig = document.getElementById("knopf" + zufaelligeFrage.a);
         knopf.style.backgroundColor = "red";
+        knopfRichtig.style.backgroundColor = "green";
+
     }
 
     setTimeout(function() { // Timeout um die Farbe wieder zu ändern
         knopf.style.backgroundColor = "#3F51B5";
+        knopfRichtig.style.backgroundColor = "#3F51B5";
     }, 2000);
 }
 function ueberpruefen() {
-    console.log(zufaelligeFrage.a);
     if (ausgewaehlteAntwort == zufaelligeFrage.a) {
         farbeAendern()
         punkte++;
@@ -201,16 +206,15 @@ function ueberpruefen() {
 }
 
 function naechsteFrage() {
-    if (zufaelligeFrageIndex < fragenListeKategorie.length) {
+    if (!fragenListeKategorie.length == 0) {
         zufaelligeFrageAnzeigen(kategorie);
         let fortschritt = document.getElementById("fortschritt");
-        let fortschrittProzent = (zufaelligeFrageIndex / fragenListeKategorie.length) * 100;
+        let fortschrittProzent = (fragenListeKategorie.length * 100)/fragenListeLaenge;
         fortschritt.style.width = fortschrittProzent + "%";
-        fortschritt.innerText = parseInt(fortschrittProzent) + "%";
+        fortschritt.innerText = fortschrittProzent + "%";
         antwortAusgewaehlt = false;
     }
     else {
-        console.log("Ende");
         weiterleiten();
     }
 }
