@@ -1,7 +1,3 @@
-
-let frage = document.getElementById("frage");
-
-
 let knopf1 = document.getElementById("knopf1");
 let knopf2 = document.getElementById("knopf2");
 let knopf3 = document.getElementById("knopf3");
@@ -15,18 +11,17 @@ let antwortAusgewaehlt = false;
 let punkteAnzeige = document.getElementById("punkteAnzeige");
 let ausgewaehlterKnopf;
 let timer;
-let fragenListeLaenge;
+let frageLaenge;
 
 let kategorie = "teil-noten";
 
 let punkte = 0;
 
-let zufaelligeFrageIndex = 0;
+let frageIndex = 0;
 let ausgewaehlteAntwort;
-let zufaelligeFrage;
-let fragenListeKategorie;
+let frage;
+let frageAnzahl = 0;
 
-let fragenListe = [];
 
 
 
@@ -78,14 +73,14 @@ beendenKnopf.addEventListener("click", function () {
 //Fetch API
 
 // Offline
-/* fetch('fragen.json')
+/* fetch('frage.json')
     .then((res) => {
         return res.json();
     })
-    .then((geladeneFragen) => {
-        fragenListe = geladeneFragen;
-        fragenListeLaenge = fragenListe[kategorie].length;
-        zufaelligeFrageAnzeigen(kategorie);
+    .then((geladenefrage) => {
+        frage = geladenefrage;
+        frageLaenge = frage[kategorie].length;
+        frageAnzeigen(kategorie);
     })
     .catch((err) => {
         console.error(err);
@@ -94,52 +89,37 @@ beendenKnopf.addEventListener("click", function () {
 
 // Online
 
-fetch('https://irene.informatik.htw-dresden.de:8888/', {
-    method: 'GET',
-    headers: {
+function frageHolen() {
+    fetch('https://irene.informatik.htw-dresden.de:8888/api/quizzes/2', {
+        method: 'GET',
+        headers: {
         'Content-Type': 'application/json',
-    }
-})
+        'Authorization': 'Basic ' + btoa('test@gmail.com:secret')
+        }
+    })
     .then(response => response.json())
     .then(data => {
         console.log('Success:', data);
-        fragenListe = data;
-        console.log(fragenListe);
-        fragenListeLaenge = fragenListe[kategorie].length;
-        zufaelligeFrageAnzeigen(kategorie);
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
+            frage = data;
+            console.log(frage);
+            frageAnzeigen(frage);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+};
 
 
 // Funktionen
 
-function frageAnzeigen(zufaelligeFrage) {
-    frage.innerText = zufaelligeFrage.f;
-    knopf1.innerText = zufaelligeFrage.l[0];
-    knopf2.innerText = zufaelligeFrage.l[1];
-    knopf3.innerText = zufaelligeFrage.l[2];
-    knopf4.innerText = zufaelligeFrage.l[3];
+function frageAnzeigen(frage) {
+    frage.innerText = frage.text;
+    knopf1.innerText = frage.options[0];
+    knopf2.innerText = frage.options[1];
+    knopf3.innerText = frage.options[2];
+    knopf4.innerText = frage.options[3];
 }
 
-function zufaelligeFrageAnzeigen(kategorie) {
-    fragenListeKategorie = fragenListe[kategorie];
-    if (fragenListeKategorie.length > 0) {
-        // Wählen Sie eine zufällige Indexnummer
-        let zufaelligerIndex = Math.floor(Math.random() * fragenListeKategorie.length);
-        // Wählen Sie die Frage an diesem Index
-        zufaelligeFrage = fragenListeKategorie[zufaelligerIndex];
-
-        // Entfernen Sie die Frage aus dem Array, damit sie nicht wiederholt wird
-        fragenListeKategorie.splice(zufaelligerIndex, 1);
-
-        // Zeigen Sie die Frage an (Sie müssen diese Funktion entsprechend Ihrer Anwendung anpassen)
-        frageAnzeigen(zufaelligeFrage);
-    } else {
-        console.log("Keine Fragen mehr übrig!");
-    }
-}
 
  /*   clearInterval(timer);
     let sekunden = 10;
@@ -151,7 +131,7 @@ function zufaelligeFrageAnzeigen(kategorie) {
         document.getElementById("sekunden").innerText = sekunden;
         if (sekunden == 0) {
             clearInterval(timer);
-            zufaelligeFrageIndex++;
+            frageIndex++;
             naechsteFrage();
         }
     },1000); */
@@ -160,6 +140,7 @@ function zufaelligeFrageAnzeigen(kategorie) {
 function farbeAendern() // Funktion um die Farbe der Knöpfe zu ändern
 {
     let knopf = null;
+    knopfRichtig = document.getElementById("knopf" + frage.id);
 
     switch (ausgewaehlterKnopf) { // Switch-Case um den ausgewählten Knopf zu ermitteln
         case 1:
@@ -178,10 +159,9 @@ function farbeAendern() // Funktion um die Farbe der Knöpfe zu ändern
             console.log("Fehler");
             return;  // Verlässt die Funktion oder den CodeblocK
     }
-    if (ausgewaehlteAntwort == zufaelligeFrage.a) {
+    if (ausgewaehlteAntwort == frage.id) {
         knopf.style.backgroundColor = "green";
     } else {
-        knopfRichtig = document.getElementById("knopf" + zufaelligeFrage.a);
         knopf.style.backgroundColor = "red";
         knopfRichtig.style.backgroundColor = "green";
 
@@ -193,7 +173,7 @@ function farbeAendern() // Funktion um die Farbe der Knöpfe zu ändern
     }, 2000);
 }
 function ueberpruefen() {
-    if (ausgewaehlteAntwort == zufaelligeFrage.a) {
+    if (ausgewaehlteAntwort == frage.id) {
         farbeAendern()
         punkte++;
         punkteAnzeige.innerText = "Punkte: " + punkte;
@@ -205,17 +185,17 @@ function ueberpruefen() {
 
 
     setTimeout(function() { // Timeout um die Farbe wieder zu ändern
-        zufaelligeFrageIndex++;
+        frageIndex++;
         naechsteFrage();
     }, 2000);
 
 }
 
 function naechsteFrage() {
-    if (!fragenListeKategorie.length == 0) {
-        zufaelligeFrageAnzeigen(kategorie);
+    if (frageAnzahl < 3) {
+        frageHolen();
         let fortschritt = document.getElementById("fortschritt");
-        let fortschrittProzent = (fragenListeKategorie.length * 100)/fragenListeLaenge;
+        let fortschrittProzent = (frageAnzahl + 1) * 33.33;
         fortschritt.style.width = fortschrittProzent + "%";
         fortschritt.innerText = fortschrittProzent + "%";
         antwortAusgewaehlt = false;
@@ -232,3 +212,4 @@ function weiterleiten() {
     }, 1000);
 }
 
+frageHolen();
