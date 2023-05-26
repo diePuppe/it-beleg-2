@@ -78,7 +78,7 @@ beendenKnopf.addEventListener("click", function () {
 //Fetch API
 
 // Offline
-fetch('fragen.json')
+/* fetch('fragen.json')
     .then((res) => {
         return res.json();
     })
@@ -90,22 +90,28 @@ fetch('fragen.json')
     .catch((err) => {
         console.error(err);
     });
+*/
 
 // Online
 
-/* fetch('https://example.com/api/tasks', {
-  method: 'GET', 
-  headers: {
-    'Content-Type': 'application/json',
-  }
+fetch('https://irene.informatik.htw-dresden.de:8888/', {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json',
+    }
 })
-.then(response => response.json())
-.then(data => {
-  console.log('Success:', data);
-})
-.catch((error) => {
-  console.error('Error:', error);
-});*/
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+        fragenListe = data;
+        console.log(fragenListe);
+        fragenListeLaenge = fragenListe[kategorie].length;
+        zufaelligeFrageAnzeigen(kategorie);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+
 
 // Funktionen
 
