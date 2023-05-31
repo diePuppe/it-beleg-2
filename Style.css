@@ -104,3 +104,21 @@ button:hover {
     margin-top: 1rem;
     color: #3F51B5;
 }
+
+table {
+    width: 50%;
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #3F51B5;
+    padding: 15px;
+    text-align: center;
+}
+
+th {
+    background-color: #3F51B5;
+    color: #FFFFFF;
+}
+

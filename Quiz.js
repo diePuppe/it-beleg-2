@@ -4,7 +4,7 @@ let knopf3 = document.getElementById("knopf3");
 let knopf4 = document.getElementById("knopf4");
 let pauseKnopf = document.getElementById("pauseKnopf");
 let beendenKnopf = document.getElementById("beendenKnopf");
-
+let frageElement = document.getElementById("frage");
 
 
 let antwortAusgewaehlt = false;
@@ -12,56 +12,25 @@ let punkteAnzeige = document.getElementById("punkteAnzeige");
 let ausgewaehlterKnopf;
 let timer;
 let frageLaenge;
+let indexArray = Array.from({length: 32}, (_, i) => i + 2);
 
 let kategorie = "teil-noten";
 
 let punkte = 0;
 
-let frageIndex = 0;
+let frageIndex;
 let ausgewaehlteAntwort;
-let frage;
-let frageAnzahl = 0;
 
+let frageAnzahl = 0;
+let maxFragen = 3;
 
 
 
 // Eventlistener
 
-knopf1.addEventListener("click", function () {
-    if(antwortAusgewaehlt == false) {
-        ausgewaehlteAntwort = 1;
-        ausgewaehlterKnopf = 1;
-        ueberpruefen();
-        antwortAusgewaehlt = true;
-    }
-});
-
-knopf2.addEventListener("click", function () {
-    if(antwortAusgewaehlt == false) {
-        ausgewaehlteAntwort = 2;
-        ausgewaehlterKnopf = 2;
-        ueberpruefen();
-        antwortAusgewaehlt = true;
-    }
-});
-
-knopf3.addEventListener("click", function () {
-    if(antwortAusgewaehlt == false) {
-        ausgewaehlteAntwort = 3;
-        ausgewaehlterKnopf = 3;
-        ueberpruefen();
-        antwortAusgewaehlt = true;
-    }
-});
-
-knopf4.addEventListener("click", function () {
-    if(antwortAusgewaehlt == false) {
-        ausgewaehlteAntwort = 4;
-        ausgewaehlterKnopf = 4;
-        ueberpruefen();
-        antwortAusgewaehlt = true;
-    }
-});
+for(let i = 1; i <= 4; i++) {
+    knopfListener(i);
+}
 
 
 beendenKnopf.addEventListener("click", function () {
@@ -72,25 +41,9 @@ beendenKnopf.addEventListener("click", function () {
 
 //Fetch API
 
-// Offline
-/* fetch('frage.json')
-    .then((res) => {
-        return res.json();
-    })
-    .then((geladenefrage) => {
-        frage = geladenefrage;
-        frageLaenge = frage[kategorie].length;
-        frageAnzeigen(kategorie);
-    })
-    .catch((err) => {
-        console.error(err);
-    });
-*/
-
-// Online
-
 function frageHolen() {
-    fetch('https://irene.informatik.htw-dresden.de:8888/api/quizzes/2', {
+    
+    fetch('https://irene.informatik.htw-dresden.de:8888/api/quizzes/' + zufaelligerIndex(), {
         method: 'GET',
         headers: {
         'Content-Type': 'application/json',
@@ -112,8 +65,29 @@ function frageHolen() {
 
 // Funktionen
 
+function zufaelligerIndex() {
+    frageIndex = choice(indexArray);
+    indexArray.splice(indexArray.indexOf(frageIndex), 1);
+    return frageIndex;
+}
+
+function choice(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function knopfListener(nummer) {
+    document.getElementById(`knopf${nummer}`).addEventListener("click", function () {
+        if(antwortAusgewaehlt == false) {
+            ausgewaehlteAntwort = nummer;
+            ausgewaehlterKnopf = nummer;
+            ueberpruefen();
+            antwortAusgewaehlt = true;
+        }
+    });
+}
+
 function frageAnzeigen(frage) {
-    frage.innerText = frage.text;
+    frageElement.innerText = frage.text;
     knopf1.innerText = frage.options[0];
     knopf2.innerText = frage.options[1];
     knopf3.innerText = frage.options[2];
@@ -137,65 +111,46 @@ function frageAnzeigen(frage) {
     },1000); */
 
 
-function farbeAendern() // Funktion um die Farbe der Knöpfe zu ändern
-{
-    let knopf = null;
-    knopfRichtig = document.getElementById("knopf" + frage.id);
-
-    switch (ausgewaehlterKnopf) { // Switch-Case um den ausgewählten Knopf zu ermitteln
-        case 1:
-            knopf = knopf1;
-            break;
-        case 2:
-            knopf = knopf2;
-            break;
-        case 3:
-            knopf = knopf3;
-            break;
-        case 4:
-            knopf = knopf4;
-            break;
-        default:
-            console.log("Fehler");
-            return;  // Verlässt die Funktion oder den CodeblocK
+    function farbeAendern() {
+        let knopf = document.getElementById(`knopf${ausgewaehlterKnopf}`);
+        let knopfRichtig = document.getElementById(`knopf1`);
+        
+        if (ausgewaehlteAntwort == frage.id) {
+            knopf.style.backgroundColor = "green";
+        } else {
+            knopf.style.backgroundColor = "red";
+            knopfRichtig.style.backgroundColor = "green";
+        }
+        
+        setTimeout(function() {
+            knopf.style.backgroundColor = "#3F51B5";
+            knopfRichtig.style.backgroundColor = "#3F51B5";
+    
+            // Die nächste Frage erst anzeigen, nachdem die Farben zurückgesetzt wurden
+            frageAnzahl++;
+            naechsteFrage();
+        }, 2000);
     }
-    if (ausgewaehlteAntwort == frage.id) {
-        knopf.style.backgroundColor = "green";
-    } else {
-        knopf.style.backgroundColor = "red";
-        knopfRichtig.style.backgroundColor = "green";
-
-    }
-
-    setTimeout(function() { // Timeout um die Farbe wieder zu ändern
-        knopf.style.backgroundColor = "#3F51B5";
-        knopfRichtig.style.backgroundColor = "#3F51B5";
-    }, 2000);
-}
-function ueberpruefen() {
-    if (ausgewaehlteAntwort == frage.id) {
+    
+    
+    function ueberpruefen() {
+        if (ausgewaehlteAntwort == frage.id) {
+            farbeAendern()
+            punkte++;
+            punkteAnzeige.innerText = "Punkte: " + punkte;
+        }
+        else {
+            console.log("Falsch");
+        }
         farbeAendern()
-        punkte++;
-        punkteAnzeige.innerText = "Punkte: " + punkte;
-    }
-    else {
-        console.log("Falsch");
-    }
-    farbeAendern()
-
-
-    setTimeout(function() { // Timeout um die Farbe wieder zu ändern
-        frageIndex++;
-        naechsteFrage();
-    }, 2000);
-
-}
+    };
+    
 
 function naechsteFrage() {
-    if (frageAnzahl < 3) {
+    if (frageAnzahl < maxFragen) {
         frageHolen();
         let fortschritt = document.getElementById("fortschritt");
-        let fortschrittProzent = (frageAnzahl + 1) * 33.33;
+        let fortschrittProzent = parseFloat((frageAnzahl / maxFragen) * 100).toFixed(2);
         fortschritt.style.width = fortschrittProzent + "%";
         fortschritt.innerText = fortschrittProzent + "%";
         antwortAusgewaehlt = false;
