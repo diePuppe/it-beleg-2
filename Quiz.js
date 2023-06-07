@@ -54,7 +54,6 @@ function frageHolen() {
     .then(data => {
         console.log('Success:', data);
             frage = data;
-            console.log(frage);
             frageAnzeigen(frage);
         })
         .catch((error) => {
@@ -138,9 +137,10 @@ function frageAnzeigen(frage) {
             farbeAendern()
             punkte++;
             punkteAnzeige.innerText = "Punkte: " + punkte;
+            console.log("punkte")
         }
         else {
-            console.log("Falsch");
+            console.log(ausgewaehlteAntwort + " " + frage.id);
         }
         farbeAendern()
     };
@@ -163,6 +163,7 @@ function naechsteFrage() {
 
 function weiterleiten() {
     setTimeout(function () {
+        localStorage.setItem('punkte', punkte);
         window.location.href = "Ende.html";
     }, 1000);
 }
