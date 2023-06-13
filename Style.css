@@ -88,14 +88,42 @@ button:hover {
     color: #3F51B5;
 }
 
-.fortschritt{
-    background-color: #CDDC39; /* Die Farbe des Fortschrittsbalkens */
-    height: 20px; /* Die Höhe des Fortschrittsbalkens */
-    width: 100%; /* Die anfängliche Breite des Fortschrittsbalkens */
-    transition: width 0.3s ease; /* Übergangseffekt */
-
-
+.fortschritt {
+    background-color: #C5CAE9; /* Eine Farbe, die besser zu #3F51B5 passt */
+    height: 20px;
+    width: 0%;
+    transition: width 0.3s ease;
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex; /* Flexbox aktivieren */
+    align-items: center; /* Zentrieren der Inhalte vertikal */
 }
+
+.fortschritt::after {
+    content: "";
+    display: block;
+    background-color: #FFC107; /* Eine Farbe, die besser zu #FFEB3B passt */
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: left center;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.prozent-anzeige {
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff; /* Textfarbe auf Weiß setzen */
+    position: absolute;
+    left: 50%; /* Horizontal zentriert */
+    transform: translateX(-50%); /* Horizontale Zentrierung */
+}
+
+
 
 .timer{
     font-size: 30px;

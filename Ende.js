@@ -1,3 +1,4 @@
+"use strict";
 // Initialisiere die Bestenliste
 let bestList = localStorage.getItem('bestList');
 if (!bestList) {
@@ -58,5 +59,5 @@ punkteAnzeige.innerText = "Du hast " + punkte + " Punkte erreicht!";
 
 // Event Listener for Restart Button
 document.getElementById("restartButton").addEventListener("click", function () {
-    window.location.href = "Quiz.html";
+    window.location.href = "./Startseite.html";
 });

@@ -12,8 +12,8 @@
     <div class="knopfRand">
         <div class="fortschritt" id="fortschritt"></div>
     </div>
-    <div id="sekunden" class="timer"></div>
 
+    <div class="prozent-anzeigen" id="prozentAnzeige"> Frage 1 / 20</div>
     <div class="punktezahl" id="punkteAnzeige">Punkte: 0</div>
     <div class="frage" id="frage"></div>
     <div class="antworten">
@@ -35,5 +35,13 @@
     </div>
 
 </body>
-<script src="Quiz.js"></script>
+<script>
+    if(localStorage.getItem('quizModus') === 'quiz') {
+        document.write('<script src="Quiz.js"><\/script>');
+        console.log('quiz');
+    } else {
+        document.write('<script src="Quiz_offline.js"><\/script>');
+        console.log('offline');
+    }
+</script>
 </html>

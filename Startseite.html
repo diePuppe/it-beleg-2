@@ -6,18 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="Style.css">
+
 </head>
 <body>
-    <div class="ueberschrift">Hezlich Willkommen bei der Quiz-App</div>
-    <div class="knopfRand">
-        <button class="knopf">
-            <a href="Quiz.html">Start</a>
-        </button>
-        <button class="knopf-bedienung">
-            <a href="Bestenliste.html">Bestenliste</a>
-        </button>
-    </div>
-    
-    
+<div class="ueberschrift">Herzlich Willkommen bei der Quiz-App</div>
+<div class="knopfRand">
+    <button class="knopf">
+        <a href="Quiz.html" onclick="wahleQuiz('quiz')">Start Quiz (Online)</a>
+    </button>
+    <button class="knopf">
+        <a href="Quiz.html" onclick="wahleQuiz('teil-mathe')">Start Quiz (Offline) - Mathematik</a>
+    </button>
+    <button class="knopf">
+        <a href="Quiz.html" onclick="wahleQuiz('teil-allgemein')">Start Quiz (Offline) - Allgemein</a>
+    </button>
+    <button class="knopf">
+        <a href="Quiz.html" onclick="wahleQuiz('teil-internettechnologien')">Start Quiz (Offline) - Internettechnologien</a>
+    </button>
+    <button class="knopf-bedienung">
+        <a href="Bestenliste.html">Bestenliste</a>
+    </button>
+</div>
+
+
 </body>
+<script src="Startseite.js"></script>
 </html>
